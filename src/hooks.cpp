@@ -707,21 +707,6 @@ MAKE_AUTO_HOOK_MATCH(
 }
 
 // hook abort and provide backtraces
-MAKE_HOOK(Abort, nullptr, void) {
-    auto logger = Paper::ConstLoggerContext("abort_hook");
-    logger.info("abort called");
-    logger.Backtrace(40);
-
-    Abort();
-}
-
-AUTO_INSTALL_FUNCTION(Abort) {
-    auto libc = dlopen("libc.so", RTLD_NOW);
-    auto abort_address = dlsym(libc, "abort");
-    INSTALL_HOOK_DIRECT(logger, Abort, abort_address);
-}
-
-// hook abort and provide backtraces
 MAKE_HOOK(delete_object_internal_step1, nullptr, void, char* object) {
     int instanceId = *(int*) (object + 8);
     auto destroy = ObjectSignal::onDestroys.find(instanceId);
